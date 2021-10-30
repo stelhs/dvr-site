@@ -1,0 +1,70 @@
+<div align="center">
+    <form name="cam_form" method="GET">
+        <select name="cam" onchange="cam_form.submit();">
+            <!-- START BLOCK : select_cam -->
+                <option value="{name}" {selected}>{name_text}</option>
+            <!-- END BLOCK : select_cam -->
+        </select>
+        <br>
+
+        <!-- START BLOCK : no_camera -->
+            Камера '{name}' не найдена
+        <!-- END BLOCK : no_camera -->
+
+        <!-- START BLOCK : selector -->
+            <table border=1>
+                <tr>
+                    <td>
+                        <!-- START BLOCK : prev_video -->
+                            <a href="{url}">
+                                <-назад<br>
+                                {info}<br>
+                                <!-- START BLOCK : prev_busy_video -->
+                                    не готов
+                                <!-- END BLOCK : prev_busy_video -->
+                            </a>
+                        <!-- END BLOCK : prev_video -->
+                    </td>
+                    <td>
+                        <input type="text" name="date_position" value="{date_position}" onchange="cam_form.submit();">
+                        <input type="hidden" name="mod" value="videos">
+
+                        <a href="javascript:;" onclick="cam_form.submit();">
+                            <img src="{http_img}search_mini.png" style="vertical-align: middle">
+                        </a>
+                        <br>
+                        <a href="{now_url}">сейчас</a>
+                    </td>
+                    <td>
+                        <!-- START BLOCK : next_video -->
+                            <a href="{url}">
+                                вперёд -><br>
+                                {info}<br>
+                                <!-- START BLOCK : next_busy_video -->
+                                    не готов
+                                <!-- END BLOCK : next_busy_video -->
+                            </a>
+                        <!-- END BLOCK : next_video -->
+                    </td>
+                </tr>
+            </table>
+        <!-- END BLOCK : selector -->
+
+        <!-- START BLOCK : no_video -->
+            Файл отсуствует
+        <!-- END BLOCK : no_video -->
+
+        <!-- START BLOCK : video -->
+            <!-- START BLOCK : busy_video -->
+                Файл не готов
+            <!-- END BLOCK : busy_video -->
+            <br>
+            <a href="{http_video}/{file}" download>{file}</a>
+            <br>
+            <video width="950" controls="controls" autoplay>
+                <source src="{http_video}/{file}#t={offset}">
+                Тег video не поддерживается вашим браузером.
+            </video>
+        <!-- END BLOCK : video -->
+    </form>
+</div>

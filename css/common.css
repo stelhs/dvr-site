@@ -1,0 +1,110 @@
+body
+{
+    padding : 0;
+    margin : 0;
+    background-color: black;
+    color: #AAAAAA;
+    font-family: "Bitstream Vera Sans","Lucida Sans Unicode","Lucida Grande",Arial;
+}
+
+*
+{
+	font-size: 20px;
+    //border: solid 1px;
+}
+
+h1
+{
+    font-size: 46px;
+    font-weight:normal;
+    text-align: center;
+}
+
+h2
+{
+    font-size: 42px;
+    font-weight: bold;
+    text-align: center;
+}
+
+table, tbody
+{
+    padding:0;
+    margin:0;
+    border-collapse:separate;
+    border-spacing:0;
+    empty-cells:show;
+    table-layout:auto;
+}
+
+td
+{
+    padding : 10;
+    text-align : left;
+    vertical-align : top;
+}
+
+a:link, a:visited
+{
+    color:#AAAAAA;
+    text-decoration:none;
+}
+
+a:active, a:hover
+{
+    color:#FFFFFF;
+}
+
+form
+{
+    margin: 15px;
+    padding:0;
+    clear: both;
+}
+
+form input, textarea {
+    background-color: black;
+    color: #AAAAAA;
+    border: 1px solid #AAAAAA;
+}
+
+img
+{
+    border:0;
+}
+
+ul
+{
+    padding:0;
+}
+
+
+#header {
+	height: 100px;
+	margin: 10px auto;
+}
+
+/*
+.s_button_black a:active, a:link, a:visited
+{
+    color:#aaaaaa;
+    border: solid 1px #aaaaaa;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px;
+}
+
+.s_button_black a:hover{
+  color: #ffffff;
+    text-decoration:none;
+    border: solid 1px #ffffff;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 5px;
+}
+*/
+
+img {
+  //  padding: 10px;
+}
+
