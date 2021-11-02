@@ -178,6 +178,7 @@ class Mod_absent extends Module {
             $tpl->assign('video',
                         ['file' => $video->fname(),
                          'offset' => ($time_position - $video->time()),
+                         'size' => sprintf("%.1f", $video->size() / (1024*1024)),
                          ]);
 
             if (!$video->size())
