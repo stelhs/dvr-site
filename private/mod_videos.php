@@ -102,6 +102,7 @@ class Video_file {
 
     function url() {
         return mk_url(['mod' => 'videos',
+                       'cam' => $this->cam->name(),
                        'time_position' => $this->time]);
     }
 
@@ -167,7 +168,7 @@ class Mod_absent extends Module {
 
         $tpl->assign('selector',
                     ['date_position' => $this->timestamp_to_date($time_position),
-                     'now_url' => mk_url([]),
+                     'now_url' => mk_url(['cam' => $cam->name()]),
                     ]);
 
         $video = $cam->video_by_timestamp($time_position);
