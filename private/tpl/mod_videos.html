@@ -49,22 +49,51 @@
                 </tr>
             </table>
         <!-- END BLOCK : selector -->
-
-        <!-- START BLOCK : no_video -->
-            Файл отсуствует
-        <!-- END BLOCK : no_video -->
-
-        <!-- START BLOCK : video -->
-            <!-- START BLOCK : busy_video -->
-                Файл не готов
-            <!-- END BLOCK : busy_video -->
-            <br>
-            <a href="{http_video}/{file}" download>{file} - {size}Mb</a>
-            <br>
-            <video width="950" controls="controls" autoplay>
-                <source src="{http_video}/{file}#t={offset}">
-                Тег video не поддерживается вашим браузером.
-            </video>
-        <!-- END BLOCK : video -->
     </form>
+
+    <!-- START BLOCK : no_video -->
+        Файл отсуствует
+    <!-- END BLOCK : no_video -->
+
+    <!-- START BLOCK : video -->
+        <!-- START BLOCK : busy_video -->
+            Файл не готов
+        <!-- END BLOCK : busy_video -->
+        <br>
+        <a href="{http_video}/{file}" download>{file} - {size}Mb</a>
+        <br>
+        <video width="950" controls="controls" autoplay>
+            <source src="{http_video}/{file}#t={offset}">
+            Тег video не поддерживается вашим браузером.
+        </video>
+        <br>
+    <!-- END BLOCK : video -->
+
+    <!-- START BLOCK : event_list -->
+        События:<br>
+        <table>
+            <!-- START BLOCK : event_item -->
+                <tr>
+                    <td>{type}</td>
+                    <td>
+                        <a href="{link}">{date}</a>
+                    </td>
+                </tr>
+            <!-- END BLOCK : event_item -->
+        </table><br>
+    <!-- END BLOCK : event_list -->
+
+    <!-- START BLOCK : alarms_list -->
+        Сработки:<br>
+        <table>
+            <!-- START BLOCK : alarm_item -->
+                <tr>
+                    <td>{zone}</td>
+                    <td>
+                        <a href="{link}">{date}</a>
+                    </td>
+                </tr>
+            <!-- END BLOCK : alarm_item -->
+        </table>
+    <!-- END BLOCK : alarms_list -->
 </div>

@@ -212,7 +212,63 @@ class Mod_absent extends Module {
                 $tpl->assign('next_busy_video');
         }
 
+        $events = $this->list_guard_events();
+        if ($events) {
+            $tpl->assign('event_list');
+            foreach ($events as $ev) {
+                $tpl->assign('event_item',
+                             ['type' => $ev['state'],
+                              'date' => $this->timestamp_to_date($ev['time']),
+                              'link' => mk_url(['cam' => $cam->name(),
+                                                'time_position' => $ev['time']])]);
+            }
+        }
+
+        $alarms = $this->list_guard_alarms();
+        if ($alarms) {
+            $tpl->assign('alarms_list');
+            foreach ($alarms as $a) {
+                $tpl->assign('alarm_item',
+                             ['zone' => $a['zone'],
+                              'date' => $this->timestamp_to_date($ev['time']),
+                              'link' => mk_url(['cam' => $cam->name(),
+                                                'time_position' => $ev['time']])]);
+            }
+        }
+
+
         return $tpl->result();
+    }
+
+    function start_rec_time()
+    {
+        $row = db()->query('select UNIX_TIMESTAMP(created) as time from videos ' .
+                           'order by id asc limit 1');
+        if (!$row or !isset($row['time']))
+            return NULL;
+        return $row['time'];
+    }
+
+    function list_guard_events() {
+        $rows = db()->query_list('select UNIX_TIMESTAMP(created) as time, state, method ' .
+                                 'from guard_states ' .
+                                 'where UNIX_TIMESTAMP(created) >= %d '.
+                                 'order by id desc',
+                                 $this->start_rec_time());
+        if (!$rows)
+            return NULL;
+        return $rows;
+    }
+
+    function list_guard_alarms() {
+        $rows = db()->query_list('select UNIX_TIMESTAMP(created) as time, zone ' .
+                                 'from guard_alarms ' .
+                                 'where UNIX_TIMESTAMP(created) >= %d '.
+                                 'order by id desc',
+                                 $this->start_rec_time());
+        if (!$rows)
+            return NULL;
+        return $rows;
     }
 
     function timestamp_to_date($time)

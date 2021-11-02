@@ -31,6 +31,7 @@ function main($tpl)
 
 $tpl = new strontium_tpl("private/tpl/skeleton.html", conf()['global_marks'], false);
 main($tpl);
-echo $tpl->result();
 header('Cache-Control: no-store');
+echo $tpl->result();
+
 
