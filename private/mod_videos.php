@@ -230,9 +230,10 @@ class Mod_absent extends Module {
             foreach ($alarms as $a) {
                 $tpl->assign('alarm_item',
                              ['zone' => $a['zone'],
-                              'date' => $this->timestamp_to_date($ev['time']),
+                              'alarm_id' => $a['id'],
+                              'date' => $this->timestamp_to_date($a['time']),
                               'link' => mk_url(['cam' => $cam->name(),
-                                                'time_position' => $ev['time']])]);
+                                                'time_position' => $a['time']])]);
             }
         }
 
@@ -261,7 +262,7 @@ class Mod_absent extends Module {
     }
 
     function list_guard_alarms() {
-        $rows = db()->query_list('select UNIX_TIMESTAMP(created) as time, zone ' .
+        $rows = db()->query_list('select UNIX_TIMESTAMP(created) as time, zone, id ' .
                                  'from guard_alarms ' .
                                  'where UNIX_TIMESTAMP(created) >= %d '.
                                  'order by id desc',
