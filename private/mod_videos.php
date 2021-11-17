@@ -14,7 +14,7 @@ class Camera {
 
     function video_by_timestamp($time)
     {
-        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size ' .
+        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size, duration ' .
                            'from videos '.
                            'where UNIX_TIMESTAMP(created) >= %d ' .
                                'and UNIX_TIMESTAMP(created) <= %d and ' .
@@ -25,12 +25,13 @@ class Camera {
             return NULL;
 
         return new Video_file($this, $row['id'], $row['fname'],
-                              $row['time'], $row['file_size']);
+                              $row['time'], $row['file_size'],
+                              $row['duration']);
     }
 
     function find_back($time, $finished_only = false)
     {
-        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size ' .
+        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size, duration ' .
                            'from videos '.
                            'where UNIX_TIMESTAMP(created) < %d ' .
                                'and cam_name = "%s" ' .
@@ -41,12 +42,13 @@ class Camera {
             return NULL;
 
         return new Video_file($this, $row['id'], $row['fname'],
-                              $row['time'], $row['file_size']);
+                              $row['time'], $row['file_size'],
+                              $row['duration']);
     }
 
     function find_next($time, $finished_only = false)
     {
-        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size ' .
+        $row = db()->query('select id, cam_name, fname, UNIX_TIMESTAMP(created) as time, file_size, duration ' .
                            'from videos '.
                            'where UNIX_TIMESTAMP(created) > %d ' .
                                'and cam_name = "%s" ' .
@@ -57,23 +59,25 @@ class Camera {
             return NULL;
 
         return new Video_file($this, $row['id'], $row['fname'],
-                              $row['time'], $row['file_size']);
+                              $row['time'], $row['file_size'],
+                              $row['duration']);
     }
 
 
 }
 
 class Video_file {
-    function __construct($cam, $id, $fname, $time, $file_size) {
+    function __construct($cam, $id, $fname, $time, $file_size, $duration) {
         $this->cam = $cam;
         $this->id = $id;
         $this->fname = $fname;
         $this->time = $time;
         $this->file_size = $file_size;
+        $this->duration = $duration;
     }
 
     function prev() {
-        $row = db()->query('select UNIX_TIMESTAMP(created) as time, id, fname, file_size ' .
+        $row = db()->query('select UNIX_TIMESTAMP(created) as time, id, fname, file_size, duration ' .
                            'from videos ' .
                            'where id < %d and cam_name = "%s" ' .
                            'order by id desc limit 1',
@@ -83,11 +87,11 @@ class Video_file {
             return NULL;
 
         return new Video_file($this->cam, $row['id'], $row['fname'],
-                              $row['time'], $row['file_size']);
+                              $row['time'], $row['file_size'], $row['duration']);
     }
 
     function next() {
-        $row = db()->query('select UNIX_TIMESTAMP(created) as time, id, fname, file_size ' .
+        $row = db()->query('select UNIX_TIMESTAMP(created) as time, id, fname, file_size, duration ' .
                     'from videos ' .
                     'where id > %d and cam_name = "%s" ' .
                     'order by id asc limit 1',
@@ -97,7 +101,7 @@ class Video_file {
             return NULL;
 
         return new Video_file($this->cam, $row['id'], $row['fname'],
-                              $row['time'], $row['file_size']);
+                              $row['time'], $row['file_size'], $row['duration']);
     }
 
     function url() {
@@ -120,6 +124,10 @@ class Video_file {
 
     function time() {
         return $this->time;
+    }
+
+    function duration() {
+        return $this->duration;
     }
 }
 
@@ -179,6 +187,7 @@ class Mod_absent extends Module {
                         ['file' => $video->fname(),
                          'offset' => ($time_position - $video->time()),
                          'size' => sprintf("%.1f", $video->size() / (1024*1024)),
+                         'duration' => $video->duration(),
                          ]);
 
             if (!$video->size())
