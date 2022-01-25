@@ -152,11 +152,25 @@ class Mod_absent extends Module {
         if ($date_position)
             $time_position = $this->date_to_timestamp($date_position);
         $cam_name = isset($args['cam']) ? $args['cam'] : conf_dvr()['cameras'][0]['name'];
+        $private = isset($args['private']) ? true : false;
+
+        if ($private)
+            $_SESSION["private"] = true;
+
+        if (isset($_SESSION["private"]) and $_SESSION["private"])
+            $private = true;
+
 
         $tpl = new strontium_tpl("private/tpl/mod_videos.html", conf()['global_marks']);
         $tpl->assign(NULL);
 
         foreach (conf_dvr()['cameras'] as $info) {
+            if (!$info['recording'])
+                continue;
+
+            if ($info['private'] and !$private)
+                continue;
+
             $tpl->assign('select_cam', ['name' => $info['name'],
                                         'name_text' => $info['desc'],
                                         'selected' => ($info['name'] == $cam_name) ? 'SELECTED' : '']);
