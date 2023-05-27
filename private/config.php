@@ -16,6 +16,7 @@ function conf()
                                'http_css' => $http_root_path.'css/',
                                'http_img' => $http_root_path.'i/',
                                'http_video' => $http_root_path.'videos/',
+                               'http_timelapse' => $http_root_path.'videos/timelapse/',
                                'http_js' => $http_root_path.'js/',
                                'time' => time(),
                                'qurl' => $http_root_path.'query.php'],

@@ -62,7 +62,7 @@
         <br>
         <a href="{http_video}/{file}" download>{file} - {size}Mb/{duration}sec</a>
         <br>
-        <video width="950" controls="controls" autoplay>
+        <video width="1600" controls="controls">
             <source src="{http_video}/{file}#t={offset}">
             Тег video не поддерживается вашим браузером.
         </video>
@@ -83,17 +83,23 @@
         </table><br>
     <!-- END BLOCK : event_list -->
 
-    <!-- START BLOCK : alarms_list -->
-        Сработки:<br>
-        <table>
-            <!-- START BLOCK : alarm_item -->
-                <tr>
-                    <td>{alarm_id}: {zone}</td>
-                    <td>
-                        <a href="{link}">{date}</a>
-                    </td>
-                </tr>
-            <!-- END BLOCK : alarm_item -->
-        </table>
-    <!-- END BLOCK : alarms_list -->
+    <!-- START BLOCK : timelapses -->
+        <!-- START BLOCK : timelapse -->
+            <br>-------------------------------------<br>
+            <br>
+            <br>
+            Таймлапс {interval}: c {date_start} по {date_end}<br>
+            Время потраченное на создание таймлэпса: {progress_duration}sec<br>
+            <br>
+            <a href="{http_timelapse}/{file}" download>{file} - {size}Mb/{video_duration}sec</a>
+            <br>
+            <video width="1600" controls="controls">
+                <source src="{http_timelapse}/{file}">
+                Тег video не поддерживается вашим браузером.
+            </video>
+            <br>
+        <!-- END BLOCK : timelapse -->
+
+    <!-- END BLOCK : timelapses -->
+
 </div>

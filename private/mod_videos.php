@@ -63,6 +63,30 @@ class Camera {
                               $row['duration']);
     }
 
+    function timelapses_by_timestamp($time)
+    {
+        $q = sprintf('select id, interval_name, '.
+                            'fname, video_duration, '.
+                            'UNIX_TIMESTAMP(start) as start_time, '.
+                            'UNIX_TIMESTAMP(end) as end_time, '.
+                            'progress_duration, file_size '.
+                    'from timelapses '.
+                    'where start <= FROM_UNIXTIME(%d) and end >= FROM_UNIXTIME(%d) and '.
+                    'cam_name = "%s"', $time, $time, $this->name);
+        $rows = db()->query_list($q);
+        if ($rows <= 0)
+            return NULL;
+
+        $list = [];
+        foreach ($rows as $row) {
+            $list[] = new Timelapse_file($this, $row['id'], $row['interval_name'],
+                                         $row['fname'], $row['video_duration'],
+                                         $row['start_time'], $row['end_time'],
+                                         $row['progress_duration'], $row['file_size']);
+        }
+        return $list;
+    }
+
 
 }
 
@@ -131,6 +155,57 @@ class Video_file {
     }
 }
 
+
+class Timelapse_file {
+    function __construct($cam, $id, $interval_name, $fname, $video_duration,
+                         $start_time, $end_time,
+                         $progress_duration, $file_size) {
+        $this->cam = $cam;
+        $this->id = $id;
+        $this->interval_name = $interval_name;
+        $this->fname = $fname;
+        $this->video_duration = $video_duration;
+        $this->start_time = $start_time;
+        $this->end_time = $end_time;
+        $this->progress_duration = $progress_duration;
+        $this->file_size = $file_size;
+    }
+
+    function interval_str() {
+        switch ($this->interval_name) {
+        case 'day': return 'дневной';
+        case 'week': return 'недельный';
+        case 'month': return 'месячный';
+        case 'year': return 'годовой';
+        }
+    }
+
+    function fname() {
+        return $this->fname;
+    }
+
+    function date_start() {
+        return $this->start_time;
+    }
+
+    function date_end() {
+        return $this->end_time;
+    }
+
+    function progress_duration() {
+        return $this->progress_duration;
+    }
+
+    function size() {
+        return $this->file_size;
+    }
+
+    function video_duration() {
+        return $this->video_duration;
+    }
+}
+
+
 function camera($cam_name) {
     static $cam = NULL;
     if ($cam)
@@ -185,7 +260,8 @@ class Mod_absent extends Module {
 
         if (!$time_position) {
             $video = $cam->find_back(time(), true);
-            $time_position = $video->time();
+            if ($video)
+              $time_position = $video->time();
         }
 
         $tpl->assign('selector',
@@ -236,7 +312,7 @@ class Mod_absent extends Module {
         }
 
         $events = $this->list_guard_events();
-        if ($events) {
+        if (is_array($events)) {
             $tpl->assign('event_list');
             foreach ($events as $ev) {
                 $tpl->assign('event_item',
@@ -247,22 +323,27 @@ class Mod_absent extends Module {
             }
         }
 
-        $alarms = $this->list_guard_alarms();
-        if ($alarms) {
-            $tpl->assign('alarms_list');
-            foreach ($alarms as $a) {
-                $tpl->assign('alarm_item',
-                             ['zone' => $a['zone'],
-                              'alarm_id' => $a['id'],
-                              'date' => $this->timestamp_to_date($a['time']),
-                              'link' => mk_url(['cam' => $cam->name(),
-                                                'time_position' => $a['time']])]);
+
+        $timelapses = $cam->timelapses_by_timestamp($time_position);
+        if ($timelapses) {
+            $tpl->assign('timelapses');
+            foreach ($timelapses as $timelapse) {
+                $tpl->assign('timelapse',
+                             ['interval' => $timelapse->interval_str(),
+                              'date_start' => $this->timestamp_to_date($timelapse->date_start()),
+                              'date_end' => $this->timestamp_to_date($timelapse->date_end()),
+                              'progress_duration' => $timelapse->progress_duration(),
+                              'file' => $timelapse->fname(),
+                              'size' => sprintf("%.1f", $timelapse->size() / (1024*1024)),
+                              'video_duration' => $timelapse->video_duration()]);
             }
         }
 
 
         return $tpl->result();
     }
+
+
 
     function start_rec_time()
     {
